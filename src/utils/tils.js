@@ -1,4 +1,6 @@
 module.exports = function tilFilter(collection) {
+  console.log("🔴", collection);
+
   const tils = collection
     .map((item) => {
       // extract date

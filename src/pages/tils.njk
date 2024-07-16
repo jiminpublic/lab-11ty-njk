@@ -1,0 +1,19 @@
+<header>
+  <h1>TILs</h1>
+</header>
+<main>
+  {% for til in collections.tils | tilFilter %}
+  <article id="{{ til.fileSlug }}">
+    <h1>
+      <a href="#{{ til.fileSlug }}">{{ til.data.title }}</a>
+    </h1>
+    {{ til.content | safe }}
+    <footer>
+      <time datetime="">{{ til.data.date }}</time>
+      {% for tag in til.data.tags %}
+      <span>#{{ tag }}</span>
+      {% endfor %}
+    </footer>
+  </article>
+  {% endfor %}
+</main>

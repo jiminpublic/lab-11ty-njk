@@ -1,0 +1,12 @@
+<header>
+  <h1>Home</h1>
+</header>
+<main>
+  <ul>
+    {% for route in ['tils'] %}
+    <li>
+      <a href="{{ route }}">{{ route }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</main>

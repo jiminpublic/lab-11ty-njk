@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 11ty Nunjucks</title>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+  <h1>TILs</h1>
+</header>
+<main>
+  
+  <article id="2024-07-12T2000">
+    <h1>
+      <a href="#2024-07-12T2000">Astro render markdown to html</a>
+    </h1>
+    <p>1）
+src/pages/example.astro</p>
+<pre><code class="language-astro">---
+// Using &quot;marked&quot; to parse markdown to html (https://github.com/markedjs/marked)
+import { marked } from 'marked';
+const markdown = &quot;# heading 1&quot;;
+const content = marked.parse(markdown);
+---
+&lt;article set:html={content} /&gt;
+</code></pre>
+<ol>
+<li>将 Markdown 解析为 HTML。</li>
+<li>给元素设置 innerHTML。</li>
+</ol>
+<p>source: https://docs.astro.build/en/guides/markdown-content/#fetching-remote-markdown</p>
+<p>2）
+如果你不想将 HTML 直接设置在某个元素上，则可以设置在 Astro 内置的 <code>Fragment</code> 组件上：</p>
+<p>src/pages/example.astro</p>
+<pre><code class="language-astro">---
+// Using &quot;marked&quot; (https://github.com/markedjs/marked)
+import { marked } from 'marked';
+const markdown = &quot;# heading 1&quot;
+const content = marked.parse(markdown);
+---
+&lt;Fragment set:html={content} /&gt;
+</code></pre>
+<p>source: https://docs.astro.build/en/basics/astro-syntax/#fragments</p>
+
+    <footer>
+      <time datetime="">2024-07-12</time>
+      
+      <span>#astro</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-12T2010">
+    <h1>
+      <a href="#2024-07-12T2010">JavaScript slugify a string</a>
+    </h1>
+    <p>Using <code>@sindresorhus/slugify</code> to slugify a string in JavaScript:</p>
+<pre><code class="language-js">import slugify from '@sindresorhus/slugify';
+
+slugify('BAR and baz');
+//=&gt; 'bar-and-baz'
+</code></pre>
+<p>source: https://github.com/sindresorhus/slugify</p>
+
+    <footer>
+      <time datetime="">2024-07-12</time>
+      
+      <span>#javascript</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-12T2020">
+    <h1>
+      <a href="#2024-07-12T2020">JavaScript check whether or not a pattern exists in a searched string</a>
+    </h1>
+    <p>To do this, we can use the <code>test()</code> method of <code>RegExp</code> instances.</p>
+<p>Example #1 - Check if there are hashtags in the given string:</p>
+<pre><code class="language-js">const result = /#[a-z]/.test(&quot;hello #world&quot;)
+
+console.log(result); // true
+</code></pre>
+<p>Example #2 - Check if &quot;hello&quot; is contained at the very beginning of a string:</p>
+<pre><code class="language-js">const str = &quot;hello world!&quot;;
+const result = /^hello/.test(str);
+
+console.log(result); // true
+</code></pre>
+<p>source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test</p>
+
+    <footer>
+      <time datetime="">2024-07-12</time>
+      
+      <span>#javascript</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-12T2030">
+    <h1>
+      <a href="#2024-07-12T2030">JavaScript removes elements from an array</a>
+    </h1>
+    <p>To do this, we can use the <code>splice()</code> method of <code>Array</code> instances.</p>
+<p>Example #1 - Remove 1 element at index 3:</p>
+<pre><code class="language-js">const myFish = [&quot;angel&quot;, &quot;clown&quot;, &quot;drum&quot;, &quot;mandarin&quot;, &quot;sturgeon&quot;];
+const removed = myFish.splice(3, 1);
+
+// myFish is [&quot;angel&quot;, &quot;clown&quot;, &quot;drum&quot;, &quot;sturgeon&quot;]
+// removed is [&quot;mandarin&quot;]
+</code></pre>
+<p>Example #2 - Remove 2 elements, starting from index 2:</p>
+<pre><code class="language-js">const myFish = [&quot;parrot&quot;, &quot;anemone&quot;, &quot;blue&quot;, &quot;trumpet&quot;, &quot;sturgeon&quot;];
+const removed = myFish.splice(2, 2);
+
+// myFish is [&quot;parrot&quot;, &quot;anemone&quot;, &quot;sturgeon&quot;]
+// removed is [&quot;blue&quot;, &quot;trumpet&quot;]
+</code></pre>
+<p>source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice</p>
+
+    <footer>
+      <time datetime="">2024-07-12</time>
+      
+      <span>#javascript</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-04T0930">
+    <h1>
+      <a href="#2024-07-04T0930">Git reset last commit</a>
+    </h1>
+    <p>1）要撤销上一次提交的更改，可以使用以下 Git 命令：</p>
+<pre><code class="language-bash">git reset --soft HEAD~1
+</code></pre>
+<p>这个命令会将 <code>HEAD</code> 移动到上一次的 commit，回退到 changes staged 的时候。</p>
+<p>2）如果你想要完全撤销最后一次提交的更改，可以使用 <code>--hard</code> 参数：</p>
+<pre><code class="language-bash">git reset --hard HEAD~1
+</code></pre>
+<p>这会将 <code>HEAD</code> 移动到上一次的 commit，并会丢弃工作目录中的所有更改。也就是说，回退到了上一次 commit 时的状态。</p>
+
+    <footer>
+      <time datetime="">2024-07-04</time>
+      
+      <span>#git</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-06-23T0930">
+    <h1>
+      <a href="#2024-06-23T0930">HTML native dialog</a>
+    </h1>
+    <h2>render a dialog</h2>
+<pre><code class="language-html">&lt;dialog&gt;
+  &lt;button&gt;Close&lt;/button&gt;
+  &lt;p&gt;This modal dialog has a groovy backdrop!&lt;/p&gt;
+&lt;/dialog&gt;
+
+&lt;button&gt;Show the dialog&lt;/button&gt;
+</code></pre>
+<p>dialog 元素默认是关闭的，即默认是不出现在用户眼前的。这个跟其他 html element 不太一样，并不是你写在 html 里了就会出现在用户视野里。<strong>你需要通过 JavaScript 去打开它。</strong></p>
+<h2>open the dialog</h2>
+<p>要打开 dialog 的话，你需要先选中 dialog 元素，然后通过 <code>dialog.showModal()</code> 等方式去打开它。</p>
+<pre><code class="language-js">const dialog = document.querySelector(&quot;dialog&quot;);
+const showButton = document.querySelector(&quot;dialog + button&quot;);
+
+// opens the dialog modally
+showButton.addEventListener(&quot;click&quot;, () =&gt; {
+  dialog.showModal();
+});
+</code></pre>
+<p>这里，我们通过  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal" title=".showModal()"><code>.showModal()</code></a> 方法打开了一个 modal dialog。</p>
+<h2>close the dialog</h2>
+<pre><code class="language-js">const closeButton = document.querySelector(&quot;dialog button&quot;);
+
+closeButton.addEventListener(&quot;click&quot;, () =&gt; {
+  dialog.close();
+});
+</code></pre>
+<p>dialog 可以通过  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close" title=".close()"><code>.close()</code></a> 方法来关闭。</p>
+<p>对于 modal dialog，也可以通过按下 Esc 键来关闭。</p>
+<h2>the display CSS property of the dialog element</h2>
+<p>当 dialog 关闭时：</p>
+<pre><code class="language-css">dialog:not([open]) {
+	display: none;
+}
+</code></pre>
+<p>当 dialog 打开时：</p>
+<pre><code class="language-css">dialog {
+	display: block;
+}
+</code></pre>
+<p>但一旦你自己给 dialog 元素的 <code>display</code> CSS 属性做了设置，就会破坏这个行为。对这个的解决方法就是不要直接在 dialog 元素上应用任何 <code>display</code>，而是将 dialog content 再 wrap 一层，把你要的 display 应用在这个 dialog content wrapper 上。</p>
+<p>source: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog</p>
+
+    <footer>
+      <time datetime="">2024-06-23</time>
+      
+      <span>#html</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-06-23T0940">
+    <h1>
+      <a href="#2024-06-23T0940">JavaScript reload webpage</a>
+    </h1>
+    <p>The <strong><code>reload()</code></strong> method of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location"><code>Location</code></a> interface reloads the current URL, <strong>like the Refresh button</strong>.</p>
+<p>source: https://developer.mozilla.org/en-US/docs/Web/API/Location/reload</p>
+
+    <footer>
+      <time datetime="">2024-06-23</time>
+      
+      <span>#javascript</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-06-23T0950">
+    <h1>
+      <a href="#2024-06-23T0950">deploy plain html to Github Page</a>
+    </h1>
+    <ol>
+<li>首先你的本地仓库先创建好，确保所有改动都 commit 了。</li>
+<li>然后在 Github 上创建一个仓库。</li>
+<li>然后回到你的本地仓库，与你的远程仓库做好连接，然后 push。</li>
+<li>最后回到你的远程仓库的 dashboard，打开 “setting → pages”，在 select  branch 那里将 None 改为你需要的分支，比如 main，目录选择如 root，最后点击保存，需要你做的工作就完成了。接下里等几分钟让 Github 部署好你的网站，之后你就可以访问了。</li>
+</ol>
+
+    <footer>
+      <time datetime="">2024-06-23</time>
+      
+      <span>#github</span>
+      
+    </footer>
+  </article>
+  
+</main>
+
+  </body>
+</html>

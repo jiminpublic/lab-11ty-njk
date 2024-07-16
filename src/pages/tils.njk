@@ -1,5 +1,6 @@
 <header>
   <h1>TILs</h1>
+  <p>There are {{ collections.tils | length }} TILs</p>
 </header>
 <main>
   {% for til in collections.tils | tilFilter %}

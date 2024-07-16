@@ -40,8 +40,6 @@ function convertHtmlToData(html = "") {
     }
     // If it is the heading1, extract it
     else if (line.startsWith("<h1>")) {
-      console.log("line", line);
-
       const regex = /<h1>(.*?)<\/h1>/;
       const match = regex.exec(line);
       if (match) {

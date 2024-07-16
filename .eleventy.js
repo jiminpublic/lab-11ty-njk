@@ -2,7 +2,9 @@ const tilFilter = require("./src/utils/tils.js");
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addCollection("tils", function (collectionApi) {
-    return collectionApi.getFilteredByGlob("src/pages/content/tils/*.md");
+    return collectionApi.getFilteredByGlob(
+      "src/pages/content/lab-content/tils/*.md"
+    );
   });
 
   eleventyConfig.addFilter("tilFilter", tilFilter);

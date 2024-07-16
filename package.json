@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "eleventy --serve",
     "build": "eleventy",
-    "predeploy": "npm run build",
+    "build-ghpages": "eleventy --pathprefix=/lab-11ty-njk/",
+    "predeploy": "npm run build-ghpages",
     "deploy": "gh-pages -d dist"
   },
   "keywords": [],

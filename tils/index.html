@@ -14,14 +14,108 @@
 </header>
 <main>
   
-  <article id="2024-07-12T1950">
+  <article id="2024-07-16T0800">
     <h1>
-      <a href="#2024-07-12T1950">Test</a>
+      <a href="#2024-07-16T0800">Git add submodule</a>
     </h1>
-    <p>Hello world 3</p>
+    <pre><code class="language-bash">git submodule {repo-url} {dirname}
+</code></pre>
+<p>Example #1 - Add all the content of a repository as a submodule to a given directory of an repository</p>
+<pre><code class="language-bash">git submodule add https://github.com/jiminpublic/lab-content src/pages/content
+</code></pre>
+<p>这里需要注意的是，你不能提前创建好 content 目录，否则会报错：</p>
+<pre><code class="language-txt">fatal: 'src/pages/content' already exists in the index
+</code></pre>
+<p>也就是说在设置要放置 submodule 的目录时，你必须得让这个命令去帮你创建这个目录。</p>
+<p>命令运行后，会在项目根目录生成一个 <code>.gitmodules</code> 文件：</p>
+<pre><code class="language-.gitmodules">[submodule &quot;src/pages/content&quot;]
+	path = src/pages/content/submodule
+	url = https://github.com/jiminpublic/lab-content
+</code></pre>
+<p>与此同时，<code>.git</code> 目录里的 <code>config</code> 文件会新增以下内容：</p>
+<pre><code class="language-config">[submodule &quot;src/pages/content&quot;]
+	url = https://github.com/jiminpublic/lab-content
+	active = true
+</code></pre>
 
     <footer>
-      <time datetime="">2024-07-12</time>
+      <time datetime="">2024-07-16</time>
+      
+      <span>#git</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-16T0810">
+    <h1>
+      <a href="#2024-07-16T0810">11ty fix the problem that css style does not work</a>
+    </h1>
+    <p>#11ty</p>
+<h3>Problem</h3>
+<p>我遇到的问题是：我在本地上运行时，样式还好好地，但是将网站部署到 Github Page 之后，写在样式表里的样式却一一失效了。</p>
+<p>我很快意识到这个问题可能跟样式表的链接有关，打开控制台一看，果然：</p>
+<pre><code class="language-html">&lt;link rel=&quot;stylesheet&quot; href=&quot;/style.css&quot;&gt;
+</code></pre>
+<p>样式表路径有问题：</p>
+<ul>
+<li>实际路径是： <code>https://jiminpublic.github.io/lab-11ty-njk/style.css</code></li>
+<li>但 <code>link</code> 标签里引用的是 <code>https://jiminpublic.github.io/style.css</code></li>
+</ul>
+<h3>Solution</h3>
+<p>解决这个问题需要做好两件事：</p>
+<ul>
+<li>一是设定部署环境下 11ty build 命令的 <code>pathprefix</code> 参数。</li>
+<li>二是应用 EleventyHtmlBasePlugin 插件，这个插件会给你所有引用了 url 的地方 append 上 pathprefix。</li>
+</ul>
+<p>package.json</p>
+<pre><code class="language-json">    &quot;build-ghpages&quot;: &quot;eleventy --pathprefix=/lab-11ty-njk/&quot;,
+    &quot;predeploy&quot;: &quot;npm run build-ghpages&quot;,
+    &quot;deploy&quot;: &quot;gh-pages -d dist&quot;
+</code></pre>
+<p>.eleventy.js</p>
+<pre><code class="language-js">const { EleventyHtmlBasePlugin } = require(&quot;@11ty/eleventy&quot;);
+
+module.exports = function (eleventyConfig) {
+	eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
+	// ...
+}
+</code></pre>
+<h3>FIN</h3>
+<p>最后部署时 build 出来的样式表的链接就是正确的了：</p>
+<pre><code class="language-html">&lt;link rel=&quot;stylesheet&quot; href=&quot;/lab-11ty-njk/style.css&quot;&gt;
+</code></pre>
+<p>source:</p>
+<ul>
+<li>https://www.11ty.dev/docs/config/#deploy-to-a-subdirectory-with-a-path-prefix
+<ul>
+<li>If your site lives in a different subdirectory (particularly useful with GitHub pages), use pathPrefix to specify this.</li>
+</ul>
+</li>
+<li>https://www.11ty.dev/docs/plugins/html-base/
+<ul>
+<li>HTML Base Plugin — Eleventy</li>
+</ul>
+</li>
+</ul>
+
+    <footer>
+      <time datetime="">2024-07-16</time>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-16T0820">
+    <h1>
+      <a href="#2024-07-16T0820">Deploy an 11ty project to Github pages</a>
+    </h1>
+    <p>#11ty</p>
+<p>source:</p>
+<ul>
+<li>https://www.11ty.dev/docs/deployment/#deploy-an-eleventy-project-to-github-pages - 借助 Github Actions</li>
+</ul>
+
+    <footer>
+      <time datetime="">2024-07-16</time>
       
     </footer>
   </article>
@@ -137,30 +231,6 @@ const removed = myFish.splice(2, 2);
       <time datetime="">2024-07-12</time>
       
       <span>#javascript</span>
-      
-    </footer>
-  </article>
-  
-  <article id="2024-07-12T2040">
-    <h1>
-      <a href="#2024-07-12T2040">Test</a>
-    </h1>
-    <p>Hello world</p>
-
-    <footer>
-      <time datetime="">2024-07-12</time>
-      
-    </footer>
-  </article>
-  
-  <article id="2024-07-12T2050">
-    <h1>
-      <a href="#2024-07-12T2050">Test</a>
-    </h1>
-    <p>Hello world 2</p>
-
-    <footer>
-      <time datetime="">2024-07-12</time>
       
     </footer>
   </article>

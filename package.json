@@ -14,6 +14,12 @@
   "license": "ISC",
   "dependencies": {
     "@11ty/eleventy": "^2.0.1",
-    "gh-pages": "^6.1.1"
+    "@shikijs/markdown-it": "^1.10.3",
+    "gh-pages": "^6.1.1",
+    "markdown-it": "^14.1.0"
+  },
+  "devDependencies": {
+    "@shikijs/transformers": "^1.10.3",
+    "shiki": "^1.10.3"
   }
 }

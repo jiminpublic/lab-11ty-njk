@@ -5,16 +5,16 @@
 <main>
   {% for til in collections.tils | tilFilter %}
   <article id="{{ til.fileSlug }}">
-    <h1>
-      <a href="#{{ til.fileSlug }}">{{ til.data.title }}</a>
-    </h1>
-    {{ til.content | safe }}
     <footer>
       <time datetime="">{{ til.data.date }}</time>
       {% for tag in til.data.tags %}
       <span>#{{ tag }}</span>
       {% endfor %}
     </footer>
+    <h1>
+      <a href="#{{ til.fileSlug }}">{{ til.data.title }}</a>
+    </h1>
+    {{ til.content | safe }}
   </article>
   {% endfor %}
 </main>

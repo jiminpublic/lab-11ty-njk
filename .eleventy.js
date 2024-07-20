@@ -59,7 +59,7 @@ module.exports = function (eleventyConfig) {
     md.use(
       await Shiki.default({
         theme: "dark-plus",
-        langs: ["javascript", "html", "bash", "astro"],
+        langs: ["javascript", "html", "bash", "astro", "txt"],
         transformers: [transformerMetaHighlight()],
       })
     );

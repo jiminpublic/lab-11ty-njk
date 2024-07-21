@@ -4,31 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab 11ty Nunjucks</title>
-    
-    <link rel="stylesheet" href="/lab-11ty-njk/reset.css">
+    <link rel="shortcut icon" href="#" type="image/x-icon">
     <link rel="stylesheet" href="/lab-11ty-njk/style.css">
   </head>
   <body>
     <header>
   <h1>TILs</h1>
-  <p>There are 8 TILs</p>
+  <p>There are 11 TILs</p>
 </header>
 <main>
   
-  <article id="2024-07-12T2000">
+  <article id="2024-07-16T0800">
+    <h1>
+      <a href="#2024-07-16T0800">Git add submodule</a>
+    </h1>
+    <div class="code-block__wrapper language-bash"><div class="code-block__header"><span class="lang">bash</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-bash"><span class="line"><span style="color:#DCDCAA">git</span><span style="color:#CE9178"> submodule</span><span style="color:#CE9178"> {repo-url}</span><span style="color:#CE9178"> {dirname}</span></span></code></pre>
+</div><p>Example #1 - Add all the content of a repository as a submodule to a given directory of an repository</p>
+<div class="code-block__wrapper language-bash"><div class="code-block__header"><span class="lang">bash</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-bash"><span class="line"><span style="color:#DCDCAA">git</span><span style="color:#CE9178"> submodule</span><span style="color:#CE9178"> add</span><span style="color:#CE9178"> <a href="https://github.com/jiminpublic/lab-content" target="_blank">https://github.com/jiminpublic/lab-content</a></span><span style="color:#CE9178"> src/pages/content</span></span></code></pre>
+</div><p>这里需要注意的是，你不能提前创建好 content 目录，否则会报错：</p>
+<div class="code-block__wrapper language-txt"><div class="code-block__header"><span class="lang">txt</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-txt"><span class="line"><span>fatal: 'src/pages/content' already exists in the index</span></span></code></pre>
+</div><p>也就是说在设置要放置 submodule 的目录时，你必须得让这个命令去帮你创建这个目录。</p>
+<p>命令运行后，会在项目根目录生成一个 <code>.gitmodules</code> 文件：</p>
+<div class="code-block__wrapper language-.gitmodules"><div class="code-block__header"><span class="lang">.gitmodules</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-txt"><span class="line"><span>[submodule "src/pages/content"]</span></span>
+<span class="line"><span>	path = src/pages/content/submodule</span></span>
+<span class="line"><span>	url = <a href="https://github.com/jiminpublic/lab-content" target="_blank">https://github.com/jiminpublic/lab-content</a></span></span></code></pre>
+</div><p>与此同时，<code>.git</code> 目录里的 <code>config</code> 文件会新增以下内容：</p>
+<div class="code-block__wrapper language-config"><div class="code-block__header"><span class="lang">config</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-txt"><span class="line"><span>[submodule "src/pages/content"]</span></span>
+<span class="line"><span>	url = <a href="https://github.com/jiminpublic/lab-content" target="_blank">https://github.com/jiminpublic/lab-content</a></span></span>
+<span class="line"><span>	active = true</span></span></code></pre>
+</div>
     <footer>
-      <time datetime="">2024-07-12</time>
+      <time datetime="">2024-07-16</time>
       
-      <span>#astro</span>
+      <span>#git</span>
       
     </footer>
+  </article>
+  
+  <article id="2024-07-16T0810">
+    <h1>
+      <a href="#2024-07-16T0810">11ty fix the problem that css style does not work</a>
+    </h1>
+    <p>#11ty</p>
+<h2>Problem</h2>
+<p>我遇到的问题是：我在本地上运行时，样式还好好地，但是将网站部署到 Github Page 之后，写在样式表里的样式却一一失效了。</p>
+<p>我很快意识到这个问题可能跟样式表的链接有关，打开控制台一看，果然：</p>
+<div class="code-block__wrapper language-html"><div class="code-block__header"><span class="lang">html</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-html"><span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#569CD6">link</span><span style="color:#9CDCFE"> rel</span><span style="color:#D4D4D4">=</span><span style="color:#CE9178">"stylesheet"</span><span style="color:#9CDCFE"> href</span><span style="color:#D4D4D4">=</span><span style="color:#CE9178">"/style.css"</span><span style="color:#808080">></span></span></code></pre>
+</div><p>样式表路径有问题：</p>
+<ul>
+<li>实际路径是： <code><a href="https://jiminpublic.github.io/lab-11ty-njk/style.css" target="_blank">https://jiminpublic.github.io/lab-11ty-njk/style.css</a></code></li>
+<li>但 <code>link</code> 标签里引用的是 <code><a href="https://jiminpublic.github.io/style.css" target="_blank">https://jiminpublic.github.io/style.css</a></code></li>
+</ul>
+<h2>Solution</h2>
+<p>解决这个问题需要做好两件事：</p>
+<ul>
+<li>一是设定部署环境下 11ty build 命令的 <code>pathprefix</code> 参数。</li>
+<li>二是应用 EleventyHtmlBasePlugin 插件，这个插件会给你所有引用了 url 的地方 append 上 pathprefix。</li>
+</ul>
+<p>package.json</p>
+<div class="code-block__wrapper language-json"><div class="code-block__header"><span class="lang">json</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-json"><span class="line"><span style="color:#CE9178">    "build-ghpages"</span><span style="color:#D4D4D4">: </span><span style="color:#CE9178">"eleventy --pathprefix=/lab-11ty-njk/"</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#CE9178">    "predeploy"</span><span style="color:#D4D4D4">: </span><span style="color:#CE9178">"npm run build-ghpages"</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#CE9178">    "deploy"</span><span style="color:#D4D4D4">: </span><span style="color:#CE9178">"gh-pages -d dist"</span></span></code></pre>
+</div><p>.eleventy.js</p>
+<div class="code-block__wrapper language-js"><div class="code-block__header"><span class="lang">js</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-js"><span class="line"><span style="color:#569CD6">const</span><span style="color:#D4D4D4"> { </span><span style="color:#4FC1FF">EleventyHtmlBasePlugin</span><span style="color:#D4D4D4"> } = </span><span style="color:#DCDCAA">require</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">"@11ty/eleventy"</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#4EC9B0">module</span><span style="color:#D4D4D4">.</span><span style="color:#4EC9B0">exports</span><span style="color:#D4D4D4"> = </span><span style="color:#569CD6">function</span><span style="color:#D4D4D4"> (</span><span style="color:#9CDCFE">eleventyConfig</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#9CDCFE">	eleventyConfig</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">addPlugin</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">EleventyHtmlBasePlugin</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#6A9955">	// ...</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span></code></pre>
+</div><h2>FIN</h2>
+<p>最后部署时 build 出来的样式表的链接就是正确的了：</p>
+<div class="code-block__wrapper language-html"><div class="code-block__header"><span class="lang">html</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-html"><span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#569CD6">link</span><span style="color:#9CDCFE"> rel</span><span style="color:#D4D4D4">=</span><span style="color:#CE9178">"stylesheet"</span><span style="color:#9CDCFE"> href</span><span style="color:#D4D4D4">=</span><span style="color:#CE9178">"/lab-11ty-njk/style.css"</span><span style="color:#808080">></span></span></code></pre>
+</div><p>source:</p>
+<ul>
+<li><a href="https://www.11ty.dev/docs/config/#deploy-to-a-subdirectory-with-a-path-prefix" target="_blank">https://www.11ty.dev/docs/config/#deploy-to-a-subdirectory-with-a-path-prefix</a>
+<ul>
+<li>If your site lives in a different subdirectory (particularly useful with GitHub pages), use pathPrefix to specify this.</li>
+</ul>
+</li>
+<li><a href="https://www.11ty.dev/docs/plugins/html-base/" target="_blank">https://www.11ty.dev/docs/plugins/html-base/</a>
+<ul>
+<li>HTML Base Plugin — Eleventy</li>
+</ul>
+</li>
+</ul>
+
+    <footer>
+      <time datetime="">2024-07-16</time>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-16T0820">
+    <h1>
+      <a href="#2024-07-16T0820">Deploy an 11ty project to Github pages</a>
+    </h1>
+    <p>#11ty</p>
+<p>source:</p>
+<ul>
+<li><a href="https://www.11ty.dev/docs/deployment/#deploy-an-eleventy-project-to-github-pages" target="_blank">https://www.11ty.dev/docs/deployment/#deploy-an-eleventy-project-to-github-pages</a> - 借助 Github Actions</li>
+</ul>
+
+    <footer>
+      <time datetime="">2024-07-16</time>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-12T2000">
     <h1>
       <a href="#2024-07-12T2000">Astro render markdown to html</a>
     </h1>
-    <p>1）
-src/pages/example.astro</p>
-<div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="lang">astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#6A9955">---</span></span>
-<span class="line"><span style="color:#6A9955">// Using "marked" to parse markdown to html (https://github.com/markedjs/marked)</span></span>
+    <p>1）</p>
+<div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="code-block__filename">/src/pages/example.astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#6A9955">---</span></span>
+<span class="line"><span style="color:#6A9955">// Using "marked" to parse markdown to html (<a href="https://github.com/markedjs/marked)" target="_blank">https://github.com/markedjs/marked)</a></span></span>
 <span class="line"><span style="color:#C586C0">import</span><span style="color:#D4D4D4"> { </span><span style="color:#9CDCFE">marked</span><span style="color:#D4D4D4"> } </span><span style="color:#C586C0">from</span><span style="color:#CE9178"> 'marked'</span><span style="color:#D4D4D4">;</span></span>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> markdown</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">"# heading 1"</span><span style="color:#D4D4D4">;</span></span>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> content</span><span style="color:#D4D4D4"> = </span><span style="color:#9CDCFE">marked</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">parse</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">markdown</span><span style="color:#D4D4D4">);</span></span>
@@ -38,28 +127,27 @@ src/pages/example.astro</p>
 <li>将 Markdown 解析为 HTML。</li>
 <li>给元素设置 innerHTML。</li>
 </ol>
-<p>source: https://docs.astro.build/en/guides/markdown-content/#fetching-remote-markdown</p>
+<p>source: <a href="https://docs.astro.build/en/guides/markdown-content/#fetching-remote-markdown" target="_blank">https://docs.astro.build/en/guides/markdown-content/#fetching-remote-markdown</a></p>
 <p>2）
 如果你不想将 HTML 直接设置在某个元素上，则可以设置在 Astro 内置的 <code>Fragment</code> 组件上：</p>
-<p>src/pages/example.astro</p>
-<div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="lang">astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#6A9955">---</span></span>
-<span class="line"><span style="color:#6A9955">// Using "marked" (https://github.com/markedjs/marked)</span></span>
+<div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="code-block__filename">src/pages/example.astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#6A9955">---</span></span>
+<span class="line"><span style="color:#6A9955">// Using "marked" (<a href="https://github.com/markedjs/marked)" target="_blank">https://github.com/markedjs/marked)</a></span></span>
 <span class="line"><span style="color:#C586C0">import</span><span style="color:#D4D4D4"> { </span><span style="color:#9CDCFE">marked</span><span style="color:#D4D4D4"> } </span><span style="color:#C586C0">from</span><span style="color:#CE9178"> 'marked'</span><span style="color:#D4D4D4">;</span></span>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> markdown</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">"# heading 1"</span></span>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> content</span><span style="color:#D4D4D4"> = </span><span style="color:#9CDCFE">marked</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">parse</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">markdown</span><span style="color:#D4D4D4">);</span></span>
 <span class="line"><span style="color:#6A9955">---</span></span>
 <span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#4EC9B0">Fragment</span><span style="color:#9CDCFE"> set:html</span><span style="color:#D4D4D4">=</span><span style="color:#569CD6">{</span><span style="color:#9CDCFE">content</span><span style="color:#569CD6">}</span><span style="color:#808080"> /></span></span></code></pre>
-</div><p>source: https://docs.astro.build/en/basics/astro-syntax/#fragments</p>
+</div><p>source: <a href="https://docs.astro.build/en/basics/astro-syntax/#fragments" target="_blank">https://docs.astro.build/en/basics/astro-syntax/#fragments</a></p>
 
-  </article>
-  
-  <article id="2024-07-12T2010">
     <footer>
       <time datetime="">2024-07-12</time>
       
-      <span>#javascript</span>
+      <span>#astro</span>
       
     </footer>
+  </article>
+  
+  <article id="2024-07-12T2010">
     <h1>
       <a href="#2024-07-12T2010">JavaScript slugify a string</a>
     </h1>
@@ -68,17 +156,17 @@ src/pages/example.astro</p>
 <span class="line"></span>
 <span class="line"><span style="color:#DCDCAA">slugify</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">'BAR and baz'</span><span style="color:#D4D4D4">);</span></span>
 <span class="line"><span style="color:#6A9955">//=> 'bar-and-baz'</span></span></code></pre>
-</div><p>source: https://github.com/sindresorhus/slugify</p>
+</div><p>source: <a href="https://github.com/sindresorhus/slugify" target="_blank">https://github.com/sindresorhus/slugify</a></p>
 
-  </article>
-  
-  <article id="2024-07-12T2020">
     <footer>
       <time datetime="">2024-07-12</time>
       
       <span>#javascript</span>
       
     </footer>
+  </article>
+  
+  <article id="2024-07-12T2020">
     <h1>
       <a href="#2024-07-12T2020">JavaScript check whether or not a pattern exists in a searched string</a>
     </h1>
@@ -92,17 +180,17 @@ src/pages/example.astro</p>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> result</span><span style="color:#D4D4D4"> =</span><span style="color:#D16969"> /</span><span style="color:#DCDCAA">^</span><span style="color:#D16969">hello/</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">test</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">str</span><span style="color:#D4D4D4">);</span></span>
 <span class="line"></span>
 <span class="line"><span style="color:#9CDCFE">console</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">log</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">result</span><span style="color:#D4D4D4">); </span><span style="color:#6A9955">// true</span></span></code></pre>
-</div><p>source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test</p>
+</div><p>source: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test</a></p>
 
-  </article>
-  
-  <article id="2024-07-12T2030">
     <footer>
       <time datetime="">2024-07-12</time>
       
       <span>#javascript</span>
       
     </footer>
+  </article>
+  
+  <article id="2024-07-12T2030">
     <h1>
       <a href="#2024-07-12T2030">JavaScript removes elements from an array</a>
     </h1>
@@ -119,17 +207,17 @@ src/pages/example.astro</p>
 <span class="line"></span>
 <span class="line"><span style="color:#6A9955">// myFish is ["parrot", "anemone", "sturgeon"]</span></span>
 <span class="line"><span style="color:#6A9955">// removed is ["blue", "trumpet"]</span></span></code></pre>
-</div><p>source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice</p>
+</div><p>source: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice</a></p>
 
+    <footer>
+      <time datetime="">2024-07-12</time>
+      
+      <span>#javascript</span>
+      
+    </footer>
   </article>
   
   <article id="2024-07-04T0930">
-    <footer>
-      <time datetime="">2024-07-04</time>
-      
-      <span>#git</span>
-      
-    </footer>
     <h1>
       <a href="#2024-07-04T0930">Git reset last commit</a>
     </h1>
@@ -140,15 +228,15 @@ src/pages/example.astro</p>
 <div class="code-block__wrapper language-bash"><div class="code-block__header"><span class="lang">bash</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-bash"><span class="line"><span style="color:#DCDCAA">git</span><span style="color:#CE9178"> reset</span><span style="color:#569CD6"> --hard</span><span style="color:#CE9178"> HEAD~1</span></span></code></pre>
 </div><p>这会将 <code>HEAD</code> 移动到上一次的 commit，并会丢弃工作目录中的所有更改。也就是说，回退到了上一次 commit 时的状态。</p>
 
+    <footer>
+      <time datetime="">2024-07-04</time>
+      
+      <span>#git</span>
+      
+    </footer>
   </article>
   
   <article id="2024-06-23T0930">
-    <footer>
-      <time datetime="">2024-06-23</time>
-      
-      <span>#html</span>
-      
-    </footer>
     <h1>
       <a href="#2024-06-23T0930">HTML native dialog</a>
     </h1>
@@ -169,14 +257,14 @@ src/pages/example.astro</p>
 <span class="line"><span style="color:#9CDCFE">showButton</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">addEventListener</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">"click"</span><span style="color:#D4D4D4">, () </span><span style="color:#569CD6">=></span><span style="color:#D4D4D4"> {</span></span>
 <span class="line"><span style="color:#9CDCFE">  dialog</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">showModal</span><span style="color:#D4D4D4">();</span></span>
 <span class="line"><span style="color:#D4D4D4">});</span></span></code></pre>
-</div><p>这里，我们通过  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal" title=".showModal()"><code>.showModal()</code></a> 方法打开了一个 modal dialog。</p>
+</div><p>这里，我们通过  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal" title=".showModal()" target="_blank"><code>.showModal()</code></a> 方法打开了一个 modal dialog。</p>
 <h2>close the dialog</h2>
 <div class="code-block__wrapper language-js"><div class="code-block__header"><span class="lang">js</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-js"><span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> closeButton</span><span style="color:#D4D4D4"> = </span><span style="color:#9CDCFE">document</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">querySelector</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">"dialog button"</span><span style="color:#D4D4D4">);</span></span>
 <span class="line"></span>
 <span class="line"><span style="color:#9CDCFE">closeButton</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">addEventListener</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">"click"</span><span style="color:#D4D4D4">, () </span><span style="color:#569CD6">=></span><span style="color:#D4D4D4"> {</span></span>
 <span class="line"><span style="color:#9CDCFE">  dialog</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">close</span><span style="color:#D4D4D4">();</span></span>
 <span class="line"><span style="color:#D4D4D4">});</span></span></code></pre>
-</div><p>dialog 可以通过  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close" title=".close()"><code>.close()</code></a> 方法来关闭。</p>
+</div><p>dialog 可以通过  <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close" title=".close()" target="_blank"><code>.close()</code></a> 方法来关闭。</p>
 <p>对于 modal dialog，也可以通过按下 Esc 键来关闭。</p>
 <h2>the display CSS property of the dialog element</h2>
 <p>当 dialog 关闭时：</p>
@@ -188,32 +276,32 @@ src/pages/example.astro</p>
 <span class="line"><span style="color:#9CDCFE">	display</span><span style="color:#D4D4D4">: </span><span style="color:#CE9178">block</span><span style="color:#D4D4D4">;</span></span>
 <span class="line"><span style="color:#D4D4D4">}</span></span></code></pre>
 </div><p>但一旦你自己给 dialog 元素的 <code>display</code> CSS 属性做了设置，就会破坏这个行为。对这个的解决方法就是不要直接在 dialog 元素上应用任何 <code>display</code>，而是将 dialog content 再 wrap 一层，把你要的 display 应用在这个 dialog content wrapper 上。</p>
-<p>source: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog</p>
+<p>source: <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog" target="_blank">https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog</a></p>
 
+    <footer>
+      <time datetime="">2024-06-23</time>
+      
+      <span>#html</span>
+      
+    </footer>
   </article>
   
   <article id="2024-06-23T0940">
+    <h1>
+      <a href="#2024-06-23T0940">JavaScript reload webpage</a>
+    </h1>
+    <p>The <strong><code>reload()</code></strong> method of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location" target="_blank"><code>Location</code></a> interface reloads the current URL, <strong>like the Refresh button</strong>.</p>
+<p>source: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location/reload" target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/Location/reload</a></p>
+
     <footer>
       <time datetime="">2024-06-23</time>
       
       <span>#javascript</span>
       
     </footer>
-    <h1>
-      <a href="#2024-06-23T0940">JavaScript reload webpage</a>
-    </h1>
-    <p>The <strong><code>reload()</code></strong> method of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Location"><code>Location</code></a> interface reloads the current URL, <strong>like the Refresh button</strong>.</p>
-<p>source: https://developer.mozilla.org/en-US/docs/Web/API/Location/reload</p>
-
   </article>
   
   <article id="2024-06-23T0950">
-    <footer>
-      <time datetime="">2024-06-23</time>
-      
-      <span>#github</span>
-      
-    </footer>
     <h1>
       <a href="#2024-06-23T0950">deploy plain html to Github Page</a>
     </h1>
@@ -224,6 +312,12 @@ src/pages/example.astro</p>
 <li>最后回到你的远程仓库的 dashboard，打开 “setting → pages”，在 select  branch 那里将 None 改为你需要的分支，比如 main，目录选择如 root，最后点击保存，需要你做的工作就完成了。接下里等几分钟让 Github 部署好你的网站，之后你就可以访问了。</li>
 </ol>
 
+    <footer>
+      <time datetime="">2024-06-23</time>
+      
+      <span>#github</span>
+      
+    </footer>
   </article>
   
 </main>

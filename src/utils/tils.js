@@ -1,3 +1,5 @@
+const { linkify } = require("./helpers");
+
 module.exports = function tilFilter(collection) {
   const tils = collection
     .map((item) => {
@@ -52,9 +54,10 @@ function convertHtmlToData(html = "") {
   }
 
   htmlByLine = htmlByLine.filter((_, i) => !removeIndex.includes(i));
+  const newContent = linkify(htmlByLine.join("\n"));
 
   return {
-    body: htmlByLine.join("\n"),
+    body: newContent,
     tags,
     title,
   };

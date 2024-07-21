@@ -105,7 +105,7 @@ module.exports = function (eleventyConfig) {
   // eleventyConfig.addPassthroughCopy({ "src/css/style.css": "style.css" });
   // eleventyConfig.addWatchTarget("src/css/");
 
-  eleventyConfig.on("eleventy.before", async () => {
+  eleventyConfig.on("eleventy.after", async () => {
     // PostCSS processing
     const cssSourceFile = "./src/css/index.css";
     const cssDestinationFile = "./dist/style.css";

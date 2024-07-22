@@ -1,16 +1,28 @@
-const tilFilter = require("./src/utils/tils.js");
-const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
+//
+const { tilContentFilter } = require("./src/utils/tils-filters.js");
+const { markdownToTilsData } = require("./src/utils/tils-collection.js");
+
+//
+const {
+  EleventyHtmlBasePlugin,
+  EleventyRenderPlugin,
+} = require("@11ty/eleventy");
+
+//
 const markdownIt = require("markdown-it");
 
 //
 const autoprefixer = require("autoprefixer");
 const cssnano = require("cssnano");
-const fs = require("fs");
 const postcss = require("postcss");
 const postcssImport = require("postcss-import");
 const postcssNesting = require("postcss-nesting");
+const path = require("path");
 
-const md = markdownIt();
+//
+const md = markdownIt({
+  linkify: true,
+});
 
 const defaultFenceRender = md.renderer.rules.fence;
 
@@ -58,17 +70,27 @@ md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
 };
 
 module.exports = function (eleventyConfig) {
+  eleventyConfig.addFilter("tilContentFilter", tilContentFilter);
+
   eleventyConfig.addCollection("tils", function (collectionApi) {
-    return collectionApi.getFilteredByGlob(
-      process.env.ELEVENTY_RUN_MODE === "build"
-        ? "src/pages/content/lab-content/tils/*.md"
-        : "src/pages/content/tils/*.md"
-    );
+    return collectionApi
+      .getFilteredByGlob(
+        process.env.ELEVENTY_RUN_MODE === "build"
+          ? "src/content/lab-content/tils/*.md"
+          : "src/content/mock-tils/*.md"
+      )
+      .map((item) => {
+        const rawMarkdown = item.template.frontMatter.content;
+        const date = item.fileSlug.slice(0, 10);
+        const { tags, title, newRawMarkdown } = markdownToTilsData(rawMarkdown);
+        item.data = { date, tags, title, newRawMarkdown };
+        return item;
+      })
+      .toSorted((a, b) => b.data.date.localeCompare(a.data.date));
   });
 
-  eleventyConfig.addFilter("tilFilter", tilFilter);
-
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
+  eleventyConfig.addPlugin(EleventyRenderPlugin);
 
   eleventyConfig.on("eleventy.before", async () => {
     const Shiki = await import("@shikijs/markdown-it");
@@ -101,36 +123,33 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.setLibrary("md", md);
 
-  // eleventyConfig.addPassthroughCopy({ "src/css/reset.css": "reset.css" });
-  // eleventyConfig.addPassthroughCopy({ "src/css/style.css": "style.css" });
-  // eleventyConfig.addWatchTarget("src/css/");
+  eleventyConfig.addTemplateFormats("css");
 
-  eleventyConfig.on("eleventy.after", async () => {
-    // PostCSS processing
-    const cssSourceFile = "./src/css/index.css";
-    const cssDestinationFile = "./dist/style.css";
+  eleventyConfig.addExtension("css", {
+    outputFileExtension: "css",
 
-    fs.readFile(cssSourceFile, (err, css) => {
-      postcss([postcssImport, autoprefixer, cssnano, postcssNesting])
-        .process(css, { from: cssSourceFile, to: cssDestinationFile })
-        .then((result) => {
-          fs.writeFile(cssDestinationFile, result.css, () => {
-            console.log(
-              `[postcss] Writing ${cssDestinationFile} from ${cssSourceFile}`
-            );
-          });
-        });
-    });
+    compile: async function (inputContent, inputPath) {
+      if (path.parse(inputPath).name !== "index") {
+        return;
+      }
+
+      return async () => {
+        const output = await postcss([
+          postcssImport,
+          autoprefixer,
+          cssnano,
+          postcssNesting,
+        ]).process(inputContent, { from: inputPath });
+
+        return output.css;
+      };
+    },
   });
-
-  eleventyConfig.addWatchTarget("./src/css/");
 
   return {
     dir: {
-      input: "src/pages",
+      input: "src",
       output: "dist",
-      includes: "../_includes",
-      data: "../_data",
     },
   };
 };

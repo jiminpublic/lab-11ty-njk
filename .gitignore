@@ -24,3 +24,6 @@ pnpm-debug.log*
 
 #
 .cache
+
+# mock data
+# src/pages/content/mock/

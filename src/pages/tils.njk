@@ -3,12 +3,12 @@
   <p>There are {{ collections.tils | length }} TILs</p>
 </header>
 <main>
-  {% for til in collections.tils | tilFilter %}
+  {% for til in collections.tils %}
   <article id="{{ til.fileSlug }}">
     <h1>
       <a href="#{{ til.fileSlug }}">{{ til.data.title }}</a>
     </h1>
-    {{ til.content | safe }}
+    {{ til.content | tilContentFilter | safe }}
     <footer>
       <time datetime="">{{ til.data.date }}</time>
       {% for tag in til.data.tags %}

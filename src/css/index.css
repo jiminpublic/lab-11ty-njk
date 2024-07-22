@@ -27,19 +27,18 @@ header {
 }
 
 main {
-  margin-top: 2rem;
-  margin-bottom: 4rem;
-}
-
-article:not(:first-child) {
-  border-top: 2px solid var(--border-color);
-  padding-top: 4rem;
-  margin-top: 4rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 article {
+  padding-top: 1rem;
   color: var(--text-primary);
   font-size: 15px;
+
+  &:not(:is(:first-child, :last-child)) {
+    margin: 3rem 0;
+  }
 
   h1,
   h2,
@@ -80,6 +79,20 @@ article {
     &:hover {
       color: var(--link-hover-color);
     }
+  }
+
+  p:has(+ :is(ul, ol)) {
+    margin-bottom: 0;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.5rem;
+  }
+
+  /* If the ul or ol is insise a li, remove its margin-bottom */
+  li:has(:is(ul, ol)) :is(ul, ol) {
+    margin-bottom: 0;
   }
 
   footer {

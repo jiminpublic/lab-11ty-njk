@@ -1,3 +1,3 @@
-[submodule "src/pages/content/lab-content"]
-	path = src/pages/content/lab-content
+[submodule "src/content/lab-content"]
+	path = src/content/lab-content
 	url = https://github.com/jiminpublic/lab-content

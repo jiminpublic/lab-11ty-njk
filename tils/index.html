@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab 11ty Nunjucks</title>
     <link rel="shortcut icon" href="#" type="image/x-icon">
-    <link rel="stylesheet" href="/lab-11ty-njk/style.css">
+    <link rel="stylesheet" href="/lab-11ty-njk/css/index.css">
   </head>
   <body>
     <header>
@@ -20,17 +20,17 @@
     </h1>
     <div class="code-block__wrapper language-bash"><div class="code-block__header"><span class="lang">bash</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-bash"><span class="line"><span style="color:#DCDCAA">git</span><span style="color:#CE9178"> submodule</span><span style="color:#CE9178"> {repo-url}</span><span style="color:#CE9178"> {dirname}</span></span></code></pre>
 </div><p>Example #1 - Add all the content of a repository as a submodule to a given directory of an repository</p>
-<div class="code-block__wrapper language-bash"><div class="code-block__header"><span class="lang">bash</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-bash"><span class="line"><span style="color:#DCDCAA">git</span><span style="color:#CE9178"> submodule</span><span style="color:#CE9178"> add</span><span style="color:#CE9178"> <a href="https://github.com/jiminpublic/lab-content" target="_blank">https://github.com/jiminpublic/lab-content</a></span><span style="color:#CE9178"> src/pages/content</span></span></code></pre>
+<div class="code-block__wrapper language-bash"><div class="code-block__header"><span class="lang">bash</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-bash"><span class="line"><span style="color:#DCDCAA">git</span><span style="color:#CE9178"> submodule</span><span style="color:#CE9178"> add</span><span style="color:#CE9178"> https://github.com/jiminpublic/lab-content</span><span style="color:#CE9178"> src/pages/content</span></span></code></pre>
 </div><p>这里需要注意的是，你不能提前创建好 content 目录，否则会报错：</p>
 <div class="code-block__wrapper language-txt"><div class="code-block__header"><span class="lang">txt</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-txt"><span class="line"><span>fatal: 'src/pages/content' already exists in the index</span></span></code></pre>
 </div><p>也就是说在设置要放置 submodule 的目录时，你必须得让这个命令去帮你创建这个目录。</p>
 <p>命令运行后，会在项目根目录生成一个 <code>.gitmodules</code> 文件：</p>
 <div class="code-block__wrapper language-.gitmodules"><div class="code-block__header"><span class="lang">.gitmodules</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-txt"><span class="line"><span>[submodule "src/pages/content"]</span></span>
 <span class="line"><span>	path = src/pages/content/submodule</span></span>
-<span class="line"><span>	url = <a href="https://github.com/jiminpublic/lab-content" target="_blank">https://github.com/jiminpublic/lab-content</a></span></span></code></pre>
+<span class="line"><span>	url = https://github.com/jiminpublic/lab-content</span></span></code></pre>
 </div><p>与此同时，<code>.git</code> 目录里的 <code>config</code> 文件会新增以下内容：</p>
 <div class="code-block__wrapper language-config"><div class="code-block__header"><span class="lang">config</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-txt"><span class="line"><span>[submodule "src/pages/content"]</span></span>
-<span class="line"><span>	url = <a href="https://github.com/jiminpublic/lab-content" target="_blank">https://github.com/jiminpublic/lab-content</a></span></span>
+<span class="line"><span>	url = https://github.com/jiminpublic/lab-content</span></span>
 <span class="line"><span>	active = true</span></span></code></pre>
 </div>
     <footer>
@@ -45,15 +45,14 @@
     <h1>
       <a href="#2024-07-16T0810">11ty fix the problem that css style does not work</a>
     </h1>
-    <p>#11ty</p>
-<h2>Problem</h2>
+    <h2>Problem</h2>
 <p>我遇到的问题是：我在本地上运行时，样式还好好地，但是将网站部署到 Github Page 之后，写在样式表里的样式却一一失效了。</p>
 <p>我很快意识到这个问题可能跟样式表的链接有关，打开控制台一看，果然：</p>
 <div class="code-block__wrapper language-html"><div class="code-block__header"><span class="lang">html</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-html"><span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#569CD6">link</span><span style="color:#9CDCFE"> rel</span><span style="color:#D4D4D4">=</span><span style="color:#CE9178">"stylesheet"</span><span style="color:#9CDCFE"> href</span><span style="color:#D4D4D4">=</span><span style="color:#CE9178">"/style.css"</span><span style="color:#808080">></span></span></code></pre>
 </div><p>样式表路径有问题：</p>
 <ul>
-<li>实际路径是： <code><a href="https://jiminpublic.github.io/lab-11ty-njk/style.css" target="_blank">https://jiminpublic.github.io/lab-11ty-njk/style.css</a></code></li>
-<li>但 <code>link</code> 标签里引用的是 <code><a href="https://jiminpublic.github.io/style.css" target="_blank">https://jiminpublic.github.io/style.css</a></code></li>
+<li>实际路径是： <code>https://jiminpublic.github.io/lab-11ty-njk/style.css</code></li>
+<li>但 <code>link</code> 标签里引用的是 <code>https://jiminpublic.github.io/style.css</code></li>
 </ul>
 <h2>Solution</h2>
 <p>解决这个问题需要做好两件事：</p>
@@ -99,8 +98,7 @@
     <h1>
       <a href="#2024-07-16T0820">Deploy an 11ty project to Github pages</a>
     </h1>
-    <p>#11ty</p>
-<p>source:</p>
+    <p>source:</p>
 <ul>
 <li><a href="https://www.11ty.dev/docs/deployment/#deploy-an-eleventy-project-to-github-pages" target="_blank">https://www.11ty.dev/docs/deployment/#deploy-an-eleventy-project-to-github-pages</a> - 借助 Github Actions</li>
 </ul>
@@ -117,7 +115,7 @@
     </h1>
     <p>1）</p>
 <div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="code-block__filename">/src/pages/example.astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#6A9955">---</span></span>
-<span class="line"><span style="color:#6A9955">// Using "marked" to parse markdown to html (<a href="https://github.com/markedjs/marked)" target="_blank">https://github.com/markedjs/marked)</a></span></span>
+<span class="line"><span style="color:#6A9955">// Using "marked" to parse markdown to html (https://github.com/markedjs/marked)</span></span>
 <span class="line"><span style="color:#C586C0">import</span><span style="color:#D4D4D4"> { </span><span style="color:#9CDCFE">marked</span><span style="color:#D4D4D4"> } </span><span style="color:#C586C0">from</span><span style="color:#CE9178"> 'marked'</span><span style="color:#D4D4D4">;</span></span>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> markdown</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">"# heading 1"</span><span style="color:#D4D4D4">;</span></span>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> content</span><span style="color:#D4D4D4"> = </span><span style="color:#9CDCFE">marked</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">parse</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">markdown</span><span style="color:#D4D4D4">);</span></span>
@@ -131,7 +129,7 @@
 <p>2）
 如果你不想将 HTML 直接设置在某个元素上，则可以设置在 Astro 内置的 <code>Fragment</code> 组件上：</p>
 <div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="code-block__filename">src/pages/example.astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#6A9955">---</span></span>
-<span class="line"><span style="color:#6A9955">// Using "marked" (<a href="https://github.com/markedjs/marked)" target="_blank">https://github.com/markedjs/marked)</a></span></span>
+<span class="line"><span style="color:#6A9955">// Using "marked" (https://github.com/markedjs/marked)</span></span>
 <span class="line"><span style="color:#C586C0">import</span><span style="color:#D4D4D4"> { </span><span style="color:#9CDCFE">marked</span><span style="color:#D4D4D4"> } </span><span style="color:#C586C0">from</span><span style="color:#CE9178"> 'marked'</span><span style="color:#D4D4D4">;</span></span>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> markdown</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">"# heading 1"</span></span>
 <span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> content</span><span style="color:#D4D4D4"> = </span><span style="color:#9CDCFE">marked</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">parse</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">markdown</span><span style="color:#D4D4D4">);</span></span>

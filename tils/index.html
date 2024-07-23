@@ -10,9 +10,106 @@
   <body>
     <header>
   <h1>TILs</h1>
-  <p>There are 14 TILs</p>
+  <p>There are 17 TILs</p>
 </header>
 <main>
+  
+  <article id="2024-07-24T0800">
+    <h1>
+      <a href="#2024-07-24T0800">Astro - styles do not work with `set:html`</a>
+    </h1>
+    <h2>Problem:</h2>
+<p>举个例子：</p>
+<div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="code-block__filename">src/pages/somepage.astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#6A9955">---</span></span>
+<span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> html</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">'&#x3C;p>Hello world.&#x3C;/p>'</span></span>
+<span class="line"><span style="color:#6A9955">---</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#4EC9B0">Fragment</span><span style="color:#9CDCFE"> set:html</span><span style="color:#D4D4D4">=</span><span style="color:#569CD6">{</span><span style="color:#9CDCFE">html</span><span style="color:#569CD6">}</span><span style="color:#808080"> /></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#569CD6">style</span><span style="color:#808080">></span></span>
+<span class="line"><span style="color:#D7BA7D">  p</span><span style="color:#D4D4D4"> {</span></span>
+<span class="line"><span style="color:#9CDCFE">    color</span><span style="color:#D4D4D4">: </span><span style="color:#CE9178">red</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">  }</span></span>
+<span class="line"><span style="color:#808080">&#x3C;/</span><span style="color:#569CD6">style</span><span style="color:#808080">></span></span></code></pre>
+</div><p>当我像上面这样做时，在 <code>&lt;style&gt;</code> 里写的样式并没有应用到 <code>&lt;Fragment /&gt;</code> 内部的元素。</p>
+<h2>Why:</h2>
+<p>这是因为 Astro 根据你写的样式生成的样式是这样的：</p>
+<div class="code-block__wrapper language-css"><div class="code-block__header"><span class="lang">css</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-css"><span class="line"><span style="color:#D7BA7D">p</span><span style="color:#D4D4D4">[</span><span style="color:#9CDCFE">data-astro-cid-xxxxxxxx</span><span style="color:#D4D4D4">] {</span></span>
+<span class="line"><span style="color:#9CDCFE">	color</span><span style="color:#D4D4D4">: </span><span style="color:#CE9178">red</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span></code></pre>
+</div><p>而对于通过 <code>set:html</code> 的方式添加的每个元素，Astro 没有给它们添加 <code>data-astro-cid-xxxx=&quot;&quot;</code> 之类的属性，所以上面这个选择器自然无法作用到 <code>p</code>。</p>
+<h2>Solution:</h2>
+<p>To fix this problem, you can opt-out of automatic CSS scoping with the <code>&lt;style is:global&gt;</code> attribute.</p>
+<div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="code-block__filename">src/pages/somepage.astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#6A9955">---</span></span>
+<span class="line"><span style="color:#569CD6">const</span><span style="color:#4FC1FF"> html</span><span style="color:#D4D4D4"> = </span><span style="color:#CE9178">'&#x3C;p>Hello world.&#x3C;/p>'</span></span>
+<span class="line"><span style="color:#6A9955">---</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#4EC9B0">Fragment</span><span style="color:#9CDCFE"> set:html</span><span style="color:#D4D4D4">=</span><span style="color:#569CD6">{</span><span style="color:#9CDCFE">html</span><span style="color:#569CD6">}</span><span style="color:#808080"> /></span></span>
+<span class="line"></span>
+<span class="line highlighted"><span style="color:#808080">&#x3C;</span><span style="color:#569CD6">style</span><span style="color:#9CDCFE"> is:global</span><span style="color:#808080">></span></span>
+<span class="line"><span style="color:#6A9955">  /* Unscoped, delivered as-is to the browser.</span></span>
+<span class="line"><span style="color:#6A9955">     Applies to all &#x3C;p> tags on your site. */</span></span>
+<span class="line"><span style="color:#D7BA7D">  p</span><span style="color:#D4D4D4"> {</span></span>
+<span class="line"><span style="color:#9CDCFE">    color</span><span style="color:#D4D4D4">: </span><span style="color:#CE9178">red</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">  }</span></span>
+<span class="line"><span style="color:#808080">&#x3C;/</span><span style="color:#569CD6">style</span><span style="color:#808080">></span></span></code></pre>
+</div><h2>Source:</h2>
+<p><a href="https://docs.astro.build/en/guides/styling/#global-styles" target="_blank">https://docs.astro.build/en/guides/styling/#global-styles</a></p>
+<ul>
+<li>You can opt-out of automatic CSS scoping with the <code>&lt;style is:global&gt;</code> attribute.</li>
+</ul>
+
+    <footer>
+      <time datetime="">2024-07-24</time>
+      
+      <span>#astro</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-24T0810">
+    <h1>
+      <a href="#2024-07-24T0810">Astro - fetch remote data</a>
+    </h1>
+    <h2>Source:</h2>
+<p><a href="https://docs.astro.build/en/guides/data-fetching/" target="_blank">https://docs.astro.build/en/guides/data-fetching/</a></p>
+<ul>
+<li>Remember, all data in Astro components is <strong>fetched when a component is rendered</strong>.</li>
+<li>In dev, you will see data <strong>fetches on component refreshes</strong>.</li>
+</ul>
+
+    <footer>
+      <time datetime="">2024-07-24</time>
+      
+      <span>#astro</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-24T0820">
+    <h1>
+      <a href="#2024-07-24T0820">Astro - Add interactivity to your Astro components</a>
+    </h1>
+    <h2>Example:</h2>
+<div class="code-block__wrapper language-astro"><div class="code-block__header"><span class="code-block__filename">src/components/Hello.astro</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-astro"><span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#569CD6">h1</span><span style="color:#808080">></span><span style="color:#D4D4D4">Welcome, world!</span><span style="color:#808080">&#x3C;/</span><span style="color:#569CD6">h1</span><span style="color:#808080">></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#808080">&#x3C;</span><span style="color:#569CD6">script</span><span style="color:#808080">></span></span>
+<span class="line"><span style="color:#9CDCFE">  console</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">log</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">'Welcome, browser console!'</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#808080">&#x3C;/</span><span style="color:#569CD6">script</span><span style="color:#808080">></span></span></code></pre>
+</div><h2>Source:</h2>
+<p><a href="https://docs.astro.build/en/guides/client-side-scripts/" target="_blank">https://docs.astro.build/en/guides/client-side-scripts/</a></p>
+<ul>
+<li>In <code>.astro</code> files, you can add client-side JavaScript by adding one (or more) <code>&lt;script&gt;</code> tags.</li>
+<li>This allows you to send JavaScript to run in the browser and add functionality to your Astro components.</li>
+</ul>
+
+    <footer>
+      <time datetime="">2024-07-24</time>
+      
+      <span>#astro</span>
+      
+    </footer>
+  </article>
   
   <article id="2024-07-22T0800">
     <h1>

@@ -10,9 +10,97 @@
   <body>
     <header>
   <h1>TILs</h1>
-  <p>There are 11 TILs</p>
+  <p>There are 14 TILs</p>
 </header>
 <main>
+  
+  <article id="2024-07-22T0800">
+    <h1>
+      <a href="#2024-07-22T0800">Git Ignoring Tracked Files</a>
+    </h1>
+    <p>假设你的项目里有一个 <code>src/somedir</code> 目录，这个目录 were previously tracked by Git。现在你想让 Git 不再 track 这个目录了，你可以使用这个命令：</p>
+<div class="code-block__wrapper language-bash"><div class="code-block__header"><span class="lang">bash</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-bash"><span class="line"><span style="color:#DCDCAA">git</span><span style="color:#CE9178"> rm</span><span style="color:#569CD6"> --cached</span><span style="color:#569CD6"> -r</span><span style="color:#CE9178"> src/somedir/</span></span></code></pre>
+</div><ul>
+<li><code>git rm</code>: This is the Git command used to remove files from the index (also known as the staging area) and the working directory.</li>
+<li><code>--cached</code>: This option tells Git to only remove the specified files or directories from the index, without touching the actual files in the working directory.</li>
+<li><code>-r</code>: This option tells Git to recursively removes the directory and its contents from Git's index.</li>
+</ul>
+<p>完成上面这步后，再将 <code>src/somedir/</code> 加到 <code>.gitignore</code> 里就大功告成了。</p>
+<p>source: ChatGPT</p>
+
+    <footer>
+      <time datetime="">2024-07-22</time>
+      
+      <span>#git</span>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-22T0810">
+    <h1>
+      <a href="#2024-07-22T0810">11ty - get the raw file content of collection items</a>
+    </h1>
+    <h2>Example:</h2>
+<div class="code-block__wrapper language-js"><div class="code-block__header"><span class="code-block__filename">.elevent.js</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-js"><span class="line"><span style="color:#4EC9B0">module</span><span style="color:#D4D4D4">.</span><span style="color:#4EC9B0">exports</span><span style="color:#D4D4D4"> = </span><span style="color:#569CD6">function</span><span style="color:#D4D4D4"> (</span><span style="color:#9CDCFE">eleventyConfig</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#9CDCFE">  eleventyConfig</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">addCollection</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">"posts"</span><span style="color:#D4D4D4">, </span><span style="color:#569CD6">function</span><span style="color:#D4D4D4"> (</span><span style="color:#9CDCFE">collectionApi</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#C586C0">    return</span><span style="color:#9CDCFE"> collectionApi</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">getFilteredByGlob</span><span style="color:#D4D4D4">(</span><span style="color:#CE9178">"src/posts/*.md"</span><span style="color:#D4D4D4">).</span><span style="color:#DCDCAA">map</span><span style="color:#D4D4D4">((</span><span style="color:#9CDCFE">item</span><span style="color:#D4D4D4">) </span><span style="color:#569CD6">=></span><span style="color:#D4D4D4"> {</span></span>
+<span class="line highlighted"><span style="color:#569CD6">      const</span><span style="color:#4FC1FF"> rawMarkdown</span><span style="color:#D4D4D4"> = </span><span style="color:#9CDCFE">item</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">template</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">frontMatter</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">content</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#569CD6">      const</span><span style="color:#D4D4D4"> { </span><span style="color:#4FC1FF">tags</span><span style="color:#D4D4D4"> } = </span><span style="color:#DCDCAA">markdownToPostData</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">rawMarkdown</span><span style="color:#D4D4D4">);</span></span>
+<span class="line"><span style="color:#9CDCFE">      item</span><span style="color:#D4D4D4">.</span><span style="color:#9CDCFE">data</span><span style="color:#D4D4D4"> = { </span><span style="color:#9CDCFE">tags</span><span style="color:#D4D4D4"> };</span></span>
+<span class="line"><span style="color:#C586C0">      return</span><span style="color:#9CDCFE"> item</span><span style="color:#D4D4D4">;</span></span>
+<span class="line"><span style="color:#D4D4D4">    });</span></span>
+<span class="line"><span style="color:#D4D4D4">  });</span></span>
+<span class="line"><span style="color:#6A9955">  // ...</span></span>
+<span class="line"><span style="color:#D4D4D4">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#569CD6">function</span><span style="color:#DCDCAA"> markdownToPostData</span><span style="color:#D4D4D4">(</span><span style="color:#9CDCFE">rawMarkdown</span><span style="color:#D4D4D4">) {</span></span>
+<span class="line"><span style="color:#6A9955">	// ...</span></span>
+<span class="line"><span style="color:#D4D4D4">}</span></span></code></pre>
+</div><h2>Source:</h2>
+<p><a href="https://github.com/11ty/eleventy/issues/1206#issuecomment-718226128" target="_blank">https://github.com/11ty/eleventy/issues/1206#issuecomment-718226128</a></p>
+<ul>
+<li>Note that in the <code>map()</code> we’re appending it to the item’s <code>data</code> object as <code>rawMarkdown</code>.</li>
+<li><code>item.data.rawMarkdown = item.template.frontMatter.content || &quot;&quot;;</code></li>
+</ul>
+<p><a href="https://github.com/11ty/eleventy/issues/1206#issuecomment-718250941" target="_blank">https://github.com/11ty/eleventy/issues/1206#issuecomment-718250941</a></p>
+<ul>
+<li>using <code>item.template.frontMatter.content</code> in a collection, to extract hashtags as tags:</li>
+<li><code>let tags = hashtagsToTags(note.template.frontMatter.content);</code></li>
+</ul>
+
+    <footer>
+      <time datetime="">2024-07-22</time>
+      
+    </footer>
+  </article>
+  
+  <article id="2024-07-22T0820">
+    <h1>
+      <a href="#2024-07-22T0820">11ty - addPassthroughCopy()</a>
+    </h1>
+    <h2>Example:</h2>
+<div class="code-block__wrapper language-js"><div class="code-block__header"><span class="code-block__filename">.elevent.js</span></div><pre class="shiki dark-plus" style="background-color:#1E1E1E;color:#D4D4D4" tabindex="0"><code class="language-js"><span class="line"><span style="color:#4EC9B0">module</span><span style="color:#D4D4D4">.</span><span style="color:#4EC9B0">exports</span><span style="color:#D4D4D4"> = (</span><span style="color:#9CDCFE">eleventyConfig</span><span style="color:#D4D4D4">) </span><span style="color:#569CD6">=></span><span style="color:#D4D4D4"> {</span></span>
+<span class="line"><span style="color:#6A9955">  // Copy all content in `src/css/` to `dist`</span></span>
+<span class="line highlighted"><span style="color:#9CDCFE">  eleventyConfig</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">addPassthroughCopy</span><span style="color:#D4D4D4">({ </span><span style="color:#CE9178">"src/css"</span><span style="color:#9CDCFE">:</span><span style="color:#CE9178"> "/"</span><span style="color:#D4D4D4"> });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A9955">  // Copy all content in `src/css/` to `dist/css`</span></span>
+<span class="line highlighted"><span style="color:#9CDCFE">  eleventyConfig</span><span style="color:#D4D4D4">.</span><span style="color:#DCDCAA">addPassthroughCopy</span><span style="color:#D4D4D4">({ </span><span style="color:#CE9178">"src/css"</span><span style="color:#9CDCFE">:</span><span style="color:#CE9178"> "css"</span><span style="color:#D4D4D4"> });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#C586C0">  return</span><span style="color:#D4D4D4"> {</span></span>
+<span class="line"><span style="color:#9CDCFE">    dir:</span><span style="color:#D4D4D4"> {</span></span>
+<span class="line"><span style="color:#9CDCFE">      input:</span><span style="color:#CE9178"> "src"</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#9CDCFE">      output:</span><span style="color:#CE9178"> "dist"</span><span style="color:#D4D4D4">,</span></span>
+<span class="line"><span style="color:#D4D4D4">    },</span></span>
+<span class="line"><span style="color:#D4D4D4">  };</span></span>
+<span class="line"><span style="color:#D4D4D4">};</span></span></code></pre>
+</div><h2>Source:</h2>
+<p><a href="https://www.11ty.dev/docs/copy/#change-the-output-directory" target="_blank">https://www.11ty.dev/docs/copy/#change-the-output-directory</a></p>
+
+    <footer>
+      <time datetime="">2024-07-22</time>
+      
+    </footer>
+  </article>
   
   <article id="2024-07-16T0800">
     <h1>
